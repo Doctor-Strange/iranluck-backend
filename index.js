@@ -5,6 +5,9 @@ const mongoose = require("mongoose");
 
 const app = express();
 const router_auth = require("./routes/r_auth");
+const router_game = require("./routes/r_game");
+
+const draw = require("./utils/draw");
 
 let PORT = process.env.PORT || 5000;
 
@@ -19,8 +22,15 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/auth", router_auth);
+// Utils functions
+// Start the timer and execute a weekly draw
+draw.draw();
 
+// Routes
+app.use("/auth", router_auth);
+app.use("/game", router_game);
+
+// Data base connection
 mongoose
   .connect("mongodb://localhost:27017/mongoIranLuckDB", {
     useNewUrlParser: true,
@@ -38,7 +48,7 @@ mongoose
   |                http://localhost:${PORT}                |
   |                                                     |
    ----------------------------------------------------
-   Ver: 0.0.0`
+   Ver: 0.1.0`
       );
     });
   })

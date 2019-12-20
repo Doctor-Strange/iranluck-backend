@@ -3,9 +3,9 @@ const Confirm_Code_Template = require("./Templates/conformEmail");
 
 const Mailer = (to, subject, code) => {
   const transporter = nodemailer.createTransport({
-    host: "smtpout.secureserver.net",
+    host: "smtpout.asia.secureserver.net",
     secureConnection: true,
-    port: 465,
+    port: 3535,
     auth: {
       user: "info@iranluck.com",
       pass: process.env.GO_DADDY_E_P
@@ -16,8 +16,8 @@ const Mailer = (to, subject, code) => {
     from: "info@iranluck.com",
     to,
     subject,
-    text: `Your Confirm Code Is`
-    // html: `${Confirm_Code_Template(code)}`
+    // text: `Your Confirm Code Is`
+    html: `${Confirm_Code_Template(code)}`
   };
 
   transporter.sendMail(mailOptions, function(error, info) {

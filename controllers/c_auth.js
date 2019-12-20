@@ -5,8 +5,8 @@ const bcrypt = require("bcryptjs");
 const Mailer = require("../utils/mailer");
 
 exports.signup = async (req, res) => {
-  email = "saderi.sajad@gmail.com";
-  password = "qwedsasd";
+  email = "iran.luck.email@gmail.com";
+  password = "123456789";
   try {
     const user = await M_SignUp.findOne({
       email
@@ -23,25 +23,17 @@ exports.signup = async (req, res) => {
         password: hashPass
       }).save();
       res.json({ message: "successful", success: true });
-      Mailer(email);
       return;
     }
   } catch (e) {
     console.log("Error handler ===> ", e);
   }
-
-  // new M_SignUp({
-  //   email:"sajad@saderi.com",
-  //   password:'122345'
-  // }).save().then(()=>{
-  //   res.send("signup");
-  // })
 };
 
 exports.signIn = async (req, res) => {
   const code = confirmCode_GEN;
-  email = "saderi.sajad@gmail.com";
-  password = "qwedsasd";
+  email = "iran.luck.email@gmail.com";
+  password = "123456789";
   try {
     const ConfirmCodeListCheck = await M_ConfirmList.findOne({ email });
     if (ConfirmCodeListCheck) {
@@ -66,11 +58,39 @@ exports.signIn = async (req, res) => {
         code
       }).save();
       Mailer(email, "Confirm Code", code);
-      return;
     } else {
       return res.json({
         success: false,
         user_name: "Please enter the correct password."
+      });
+    }
+  } catch (e) {
+    console.log("Error handler ===> ", e);
+  }
+};
+
+exports.confirmCodeCheck = async (req, res) => {
+  const code = "99936";
+  email = "iran.luck.email@gmail.com";
+  try {
+    const ConfirmCodeListCheck = await M_ConfirmList.findOne({ email });
+    if (ConfirmCodeListCheck) {
+      if (code === ConfirmCodeListCheck.code) {
+        ConfirmCodeListCheck.remove()
+        return res.json({
+          success: true,
+          message: "ok"
+        });
+      } else {
+        return res.json({
+          success: false,
+          message: "Confirm code is not correct."
+        });
+      }
+    } else {
+      return res.json({
+        success: false,
+        message: "This email is not registered to assign a confirmation code. Get a new confirmation code."
       });
     }
   } catch (e) {
