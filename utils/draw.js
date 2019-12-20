@@ -46,6 +46,16 @@ exports.draw = () => {
   dayStarter();
 };
 
+exports.countDown = () => {
+  const date = new Date();
+  return {
+    remainingDay,
+    remainingHours: 23 - date.getHours(),
+    remainingMinutes: 59 - date.getMinutes(),
+    remainingSeconds: 59 - date.getSeconds()
+  };
+};
+
 const dayStarter = () => {
   console.log("daily count down started");
   let dailyInterval = setInterval(() => {
