@@ -9,7 +9,7 @@ const router_game = require("./routes/r_game");
 
 const draw = require("./utils/draw");
 
-let PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5000;
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -32,9 +32,10 @@ app.use("/game", router_game);
 
 // Data base connection
 mongoose
-  .connect("mongodb://localhost:27017/mongoIranLuckDB", {
+  .connect(process.env.MONGODB_URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
   })
   .then(result => {
     app.listen(PORT, () => {
@@ -48,7 +49,7 @@ mongoose
   |                http://localhost:${PORT}                |
   |                                                     |
    ----------------------------------------------------
-   Ver: 0.2.0`
+   Ver: 0.3.0`
       );
     });
   })
