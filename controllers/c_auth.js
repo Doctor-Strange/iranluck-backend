@@ -1,4 +1,4 @@
-const M_SignUp = require("../models/auth/createUser");
+const M_User = require("../models/auth/User");
 // const M_ConfirmList = require("../models/confirm/confirmList");
 
 // Route ====> /auth/signup
@@ -6,7 +6,7 @@ exports.signup = async (req, res) => {
   email = "iran.luck.email@gmail.com";
   password = "123456789";
   try {
-    const user = await M_SignUp.findOne({
+    const user = await M_User.findOne({
       email
     });
     if (user) {
@@ -15,7 +15,7 @@ exports.signup = async (req, res) => {
         message: "This email is signed up before"
       });
     } else {
-      const newUser = new M_SignUp({
+      const newUser = new M_User({
         email,
         password
       });
@@ -37,7 +37,7 @@ exports.signIn = async (req, res) => {
   email = "iran.luck.email@gmail.com";
   password = "123456789";
   try {
-      const user = await M_SignUp.findByCredentials(email, password);
+      const user = await M_User.findByCredentials(email, password);
       const token = await user.generateAuthToken();
       return res.json({ success: true, message: "Ok", token: token });
   } catch (e) {    

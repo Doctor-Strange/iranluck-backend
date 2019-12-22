@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
-const M_user = require("../models/auth/createUser");
+const M_user = require("../models/auth/User");
 
 const authMiddleware = async (req, res, next) => {
   const Authorization =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGZlMzJiNjhiZmMxZjA4NThmMWZlOGIiLCJpYXQiOjE1NzY5NDAyMTR9.7502vJ_ljpOjXRPvSexK8wlObfVrs_MN59ffIrtvUf4";
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZGZmZTBkYTYwZDdiZjE2MDBhYjViMmIiLCJpYXQiOjE1NzcwNTAzMzB9.jGnhY-E8f7_O00HWxnnkxJJ1WwRKWw3hRGwQxtV83Wk";
   // const token = req.header("Authorization").replace("Bearer ", "");
   const token = Authorization.replace("Bearer ", "");
   const data = jwt.verify(token, process.env.JWT_KEY);

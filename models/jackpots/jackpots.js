@@ -10,6 +10,10 @@ const jackpots = new Schema({
     },
     required: true
   },
+  drawCount: {
+    type: Number,
+    required: true
+  },
   date: {
     type: Date,
     required: true

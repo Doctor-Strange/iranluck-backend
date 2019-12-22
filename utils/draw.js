@@ -63,7 +63,6 @@ const dayStarter = () => {
     if (drawDate.day === remainingDay) {
       hourStarter();
       //   set the start day to 6
-      remainingDay = 6;
       clearInterval(dailyInterval);
     } else remainingDay = remainingDay - 1;
   }, 86400000);
@@ -103,6 +102,7 @@ const secondsStarter = () => {
   let secondsInterval = setInterval(() => {
     //console.log(remainingSeconds);
     if (drawDate.second === remainingSeconds) {
+      remainingDay = 6;
       dayStarter();
       jackpotSaver();
       clearInterval(secondsInterval);
@@ -110,11 +110,14 @@ const secondsStarter = () => {
   }, 1000);
 };
 
-const jackpotSaver = () => {
+const jackpotSaver = async () => {
   const jackpotIs = jackpot_Gen();
   //console.log(jackpotIs);
+  const collectionLength = await M_jackpot.estimatedDocumentCount();
   const jackpot = new M_Jackpots({
     ticket: jackpotIs,
-    date: new Date()
-  }).save();
+    date: new Date(),
+    drawCount: collectionLength
+  });
+  await jackpot.save();
 };

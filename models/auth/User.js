@@ -20,6 +20,41 @@ const signup = new Schema({
     required: true,
     minLength: 8
   },
+  tickets: [
+    {
+      ticket: {
+        type: [
+          {
+            ticket: { type: String, required: true },
+            powerBall: { type: Number, required: true }
+          }
+        ],
+        required: true
+      },
+      drawCount: {
+        type: Number,
+        required: true
+      },
+      date: {
+        type: Date,
+        required: true
+      }
+    }
+  ],
+  winners: [
+    {
+      ticket: { type: String, required: true },
+      powerBall: { type: Number, required: true },
+      drawCount: {
+        type: Number,
+        required: true
+      },
+      date: {
+        type: Date,
+        required: true
+      }
+    }
+  ],
   tokens: [
     {
       token: {
@@ -58,6 +93,26 @@ signup.statics.findByCredentials = async (email, password) => {
   if (!isPasswordMatch) {
     throw new Error("Invalid Email or Password.");
   }
+  return user;
+};
+
+signup.statics.addTicket = async (email, ticket, drawCount) => {
+  const user = await Signup.findOne({ email });
+  if (user.tickets.length >= 1) {
+    const DocLen = user.tickets.length - 1;
+    if (user.tickets[DocLen].drawCount === drawCount) {
+      user.tickets[DocLen].ticket = user.tickets[DocLen].ticket.concat(ticket);
+    } else {
+      user.tickets = user.tickets.concat({
+        ticket,
+        date: new Date(),
+        drawCount
+      });
+    }
+  } else {
+    user.tickets = [{ ticket, date: new Date(), drawCount }];
+  }
+  user.save();
   return user;
 };
 
