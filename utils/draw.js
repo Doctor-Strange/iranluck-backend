@@ -1,4 +1,5 @@
 const M_Jackpots = require("../models/jackpots/jackpots");
+const winnerFounder = require("../utils/winnerFounder");
 
 const jackpot_Gen = require("./jackpot_Gen");
 
@@ -44,6 +45,7 @@ switch (getDay) {
 
 exports.draw = () => {
   dayStarter();
+  jackpotSaver();
 };
 
 exports.countDown = () => {
@@ -111,13 +113,17 @@ const secondsStarter = () => {
 };
 
 const jackpotSaver = async () => {
-  const jackpotIs = jackpot_Gen();
-  //console.log(jackpotIs);
-  const collectionLength = await M_jackpot.estimatedDocumentCount();
-  const jackpot = new M_Jackpots({
-    ticket: jackpotIs,
-    date: new Date(),
-    drawCount: collectionLength
+  // const jackpotIs = jackpot_Gen();
+  // const collectionLength = await M_Jackpots.estimatedDocumentCount();
+  // const jackpot = new M_Jackpots({
+  //   ticket: jackpotIs,
+  //   date: new Date(),
+  //   drawCount: collectionLength
+  // });
+  // await jackpot.save();
+  // winnerFounder(jackpot)
+  winnerFounder({
+    ticket: { jackpot: "57,10,39,34,48,20", powerBall: 7 },
+    drawCount: 9
   });
-  await jackpot.save();
 };

@@ -43,8 +43,12 @@ const signup = new Schema({
   ],
   winners: [
     {
-      ticket: { type: String, required: true },
-      powerBall: { type: Number, required: true },
+      list: [
+        {
+          ticket: { type: String, required: true },
+          powerBall: { type: Number, required: true }
+        }
+      ],
       drawCount: {
         type: Number,
         required: true

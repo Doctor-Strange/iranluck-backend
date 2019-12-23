@@ -34,6 +34,22 @@ thisDraw.statics.saveTicket = async (email, ticket) => {
   return;
 };
 
+thisDraw.statics.getAllTickets = async () => {
+  const user = await ThisDraw.find();
+  return user;
+
+  // if (user) {
+  //   user.tickets = user.tickets.concat(ticket);
+  //   user.save();
+  // } else {
+  //   const newUser = new ThisDraw({
+  //     tickets: ticket,
+  //     email
+  //   });
+  //   newUser.save();
+  // }
+};
+
 const ThisDraw = mongoose.model("ThisDraw", thisDraw);
 
 module.exports = ThisDraw;
