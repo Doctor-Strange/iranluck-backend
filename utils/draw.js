@@ -1,4 +1,5 @@
 const M_Jackpots = require("../models/jackpots/jackpots");
+const M_ThisDraw = require("../models/jackpots/thisDraw");
 const winnerFounder = require("../utils/winnerFounder");
 
 const jackpot_Gen = require("./jackpot_Gen");
@@ -59,7 +60,6 @@ exports.countDown = () => {
 };
 
 const dayStarter = () => {
-  console.log("daily count down started");
   let dailyInterval = setInterval(() => {
     //console.log(remainingDay);
     if (drawDate.day === remainingDay) {
@@ -113,17 +113,27 @@ const secondsStarter = () => {
 };
 
 const jackpotSaver = async () => {
-  // const jackpotIs = jackpot_Gen();
-  // const collectionLength = await M_Jackpots.estimatedDocumentCount();
-  // const jackpot = new M_Jackpots({
-  //   ticket: jackpotIs,
-  //   date: new Date(),
-  //   drawCount: collectionLength
-  // });
-  // await jackpot.save();
-  // winnerFounder(jackpot)
-  winnerFounder({
-    ticket: { jackpot: "57,10,39,34,48,20", powerBall: 7 },
-    drawCount: 9
+  const jackpotIs = jackpot_Gen();
+  const collectionLength = await M_Jackpots.estimatedDocumentCount();
+  const jackpot = new M_Jackpots({
+    ticket: jackpotIs,
+    date: new Date(),
+    drawCount: collectionLength
   });
+  await jackpot.save();
+  const soldTicketLen = await M_ThisDraw.estimatedDocumentCount();
+  // const soldTicketLen = 0
+  // DEV^
+  if (soldTicketLen > 0) {
+    winnerFounder(jackpot)
+    // winnerFounder({
+    //   ticket: { jackpot: "1,2,3,4,5,6", powerBall: 8 },
+    //   date: "2019-12-24T13:46:35.646Z",
+    //   drawCount: 0,
+    //   __v: 0
+    // });
+    // DEV^
+  } else {
+    console.log("nothing sold");
+  }
 };

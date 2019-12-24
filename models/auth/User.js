@@ -45,8 +45,11 @@ const signup = new Schema({
     {
       list: [
         {
-          ticket: { type: String, required: true },
-          powerBall: { type: Number, required: true }
+          userTicket: { type: String, required: true },
+          powerBall: { type: Number, required: true },
+          equalItem: Number,
+          TempArr: [],
+          powerBallStatus: Boolean
         }
       ],
       drawCount: {
@@ -59,6 +62,29 @@ const signup = new Schema({
       }
     }
   ],
+  perfect_money: {
+    type: Number
+  },
+  lucky_coin: {
+    type: Number
+  },
+  deposit_history: {
+    type: [
+      {
+        amount: Number,
+        date: Date
+      }
+    ]
+  },
+  withdrawal_history: {
+    type: [
+      {
+        amount: Number,
+        date: Date
+      }
+    ]
+  },
+  wallet: String,
   tokens: [
     {
       token: {
@@ -120,6 +146,6 @@ signup.statics.addTicket = async (email, ticket, drawCount) => {
   return user;
 };
 
-const Signup = mongoose.model("Signup", signup);
+const Signup = mongoose.model("Users", signup);
 
 module.exports = Signup;

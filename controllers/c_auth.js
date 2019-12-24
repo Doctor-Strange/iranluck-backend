@@ -3,8 +3,8 @@ const M_User = require("../models/auth/User");
 
 // Route ====> /auth/signup
 exports.signup = async (req, res) => {
-  email = "iran.luck.email@gmail.com";
-  password = "123456789";
+  email = "saderi.sajad@gmail.com";
+  password = "987654321";
   try {
     const user = await M_User.findOne({
       email
@@ -34,8 +34,8 @@ exports.signup = async (req, res) => {
 
 // Route ====> /auth/signin
 exports.signIn = async (req, res) => {
-  email = "iran.luck.email@gmail.com";
-  password = "123456789";
+  email = "saderi.sajad@gmail.com";
+  password = "987654321";
   try {
       const user = await M_User.findByCredentials(email, password);
       const token = await user.generateAuthToken();
