@@ -3,8 +3,9 @@ const M_User = require("../models/auth/User");
 
 // Route ====> /auth/signup
 exports.signup = async (req, res) => {
-  email = "saderi.sajad@gmail.com";
+  email = "test@gmail.com";
   password = "987654321";
+  parent_ref_id = "VYTFSQHLTN";
   try {
     const user = await M_User.findOne({
       email
@@ -15,16 +16,26 @@ exports.signup = async (req, res) => {
         message: "This email is signed up before"
       });
     } else {
-      const newUser = new M_User({
-        email,
-        password
-      });
+      let userData = null;
+      if (parent_ref_id) {
+        await M_User.addLuckyCoin(parent_ref_id);
+        userData = {
+          email,
+          password,
+          parent_ref_id
+        };
+      } else {
+        userData = {
+          email,
+          password
+        };
+      }
+      const newUser = new M_User(userData);
       await newUser.save();
       const token = await newUser.generateAuthToken();
-      return res
+      res
         .status(201)
         .json({ token: token, message: "successful", success: true });
-      return;
     }
   } catch (e) {
     console.log("Error handler ===> ", e);
@@ -37,10 +48,10 @@ exports.signIn = async (req, res) => {
   email = "saderi.sajad@gmail.com";
   password = "987654321";
   try {
-      const user = await M_User.findByCredentials(email, password);
-      const token = await user.generateAuthToken();
-      return res.json({ success: true, message: "Ok", token: token });
-  } catch (e) {    
+    const user = await M_User.findByCredentials(email, password);
+    const token = await user.generateAuthToken();
+    return res.json({ success: true, message: "Ok", token: token });
+  } catch (e) {
     return res.status(401).json({ success: false, message: e.message });
   }
 };
@@ -61,8 +72,6 @@ exports.signIn = async (req, res) => {
 //     console.log("Error handler ===> ", e);
 //   }
 // };
-
-
 
 // send email workFlow ===>
 

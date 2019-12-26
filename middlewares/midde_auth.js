@@ -3,7 +3,7 @@ const M_user = require("../models/auth/User");
 
 const authMiddleware = async (req, res, next) => {
   const Authorization =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTAyMDQ3YzI4NTEwNzBjNjg2MmZhODMiLCJpYXQiOjE1NzcxOTA1MjR9.Sei4WNNzo2xuIrAJYkAy0HF8tKiP_FmPZA4gakjBeLQ";
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTA0NWRlNDFkYjhhYTBmNmM3MDA2YWEiLCJpYXQiOjE1NzczNDQ0ODR9.EIqfMEOfn4EQFMwgKdON0KVwdmZhGxA9G1DLUjwkT44";
   // const token = req.header("Authorization").replace("Bearer ", "");
   const token = Authorization.replace("Bearer ", "");
   const data = jwt.verify(token, process.env.JWT_KEY);

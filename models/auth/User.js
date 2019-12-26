@@ -3,6 +3,7 @@ const validator = require("validator");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
+const Ref_GEN = require("../../utils/ref_id_GEN");
 
 const signup = new Schema({
   email: {
@@ -62,11 +63,18 @@ const signup = new Schema({
       }
     }
   ],
+  ref_id: {
+    type: String,
+    default: Ref_GEN()
+  },
+  parent_ref_id: String,
   perfect_money: {
-    type: Number
+    type: Number,
+    default: 0
   },
   lucky_coin: {
-    type: Number
+    type: Number,
+    default: 1
   },
   deposit_history: {
     type: [
@@ -126,24 +134,42 @@ signup.statics.findByCredentials = async (email, password) => {
   return user;
 };
 
-signup.statics.addTicket = async (email, ticket, drawCount) => {
-  const user = await Signup.findOne({ email });
-  if (user.tickets.length >= 1) {
-    const DocLen = user.tickets.length - 1;
-    if (user.tickets[DocLen].drawCount === drawCount) {
-      user.tickets[DocLen].ticket = user.tickets[DocLen].ticket.concat(ticket);
-    } else {
-      user.tickets = user.tickets.concat({
-        ticket,
-        date: new Date(),
-        drawCount
-      });
-    }
-  } else {
-    user.tickets = [{ ticket, date: new Date(), drawCount }];
+signup.statics.addLuckyCoin = async ref_id => {
+  const user = await Signup.findOne({ ref_id });
+  if (!user) {
+    throw new Error("Invalid Reference ID.");
   }
-  user.save();
-  return user;
+  user.lucky_coin = user.lucky_coin + 1;
+  return await user.save();
+};
+
+signup.statics.addTicket = async (email, ticket, drawCount) => {
+  try {
+    const user = await Signup.findOne({ email });
+    if (!user) {
+      throw new Error("User not found!");
+    }
+    if (user.tickets.length >= 1) {
+      const DocLen = user.tickets.length - 1;
+      if (user.tickets[DocLen].drawCount === drawCount) {
+        user.tickets[DocLen].ticket = user.tickets[DocLen].ticket.concat(
+          ticket
+        );
+      } else {
+        user.tickets = user.tickets.concat({
+          ticket,
+          date: new Date(),
+          drawCount
+        });
+      }
+    } else {
+      user.tickets = [{ ticket, date: new Date(), drawCount }];
+    }
+    user.save();
+    return user;
+  } catch (e) {
+    throw new Error(e);
+  }
 };
 
 const Signup = mongoose.model("Users", signup);

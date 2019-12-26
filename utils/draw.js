@@ -127,9 +127,9 @@ const jackpotSaver = async () => {
   if (soldTicketLen > 0) {
     winnerFounder(jackpot)
     // winnerFounder({
-    //   ticket: { jackpot: "1,2,3,4,5,6", powerBall: 8 },
+    //   ticket: { jackpot: "11,58,30,43,52,27", powerBall: 8 },
     //   date: "2019-12-24T13:46:35.646Z",
-    //   drawCount: 0,
+    //   drawCount: 30,
     //   __v: 0
     // });
     // DEV^
