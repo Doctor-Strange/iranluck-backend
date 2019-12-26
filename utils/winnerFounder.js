@@ -34,7 +34,12 @@ const MegaWinner = async (ticket, thisDraw) => {
       console.log(TempArr);
 
       equalItem = TempArr.length;
-      if (equalItem > 1) {
+      if (equalItem === 1 && powerBallStatus) {
+        winTicketList = {
+          ...winTicketList,
+          lucky_coin: winTicketList.lucky_coin + 1
+        };
+      } else if (equalItem > 1) {
         const prize = prize_CALC(equalItem, powerBallStatus);
         winTicketList.TicketWinPrize = winTicketList.TicketWinPrize.concat({
           equalItem,
@@ -50,7 +55,12 @@ const MegaWinner = async (ticket, thisDraw) => {
       equalItem = 0;
       powerBallStatus = false;
     });
-    if (winTicketList.TicketWinPrize.length > 0) {
+    if (
+      winTicketList.TicketWinPrize.length === 0 &&
+      winTicketList.lucky_coin > 0
+    ) {
+      SaveMegaWinner(user.email, winTicketList);
+    } else if (winTicketList.TicketWinPrize.length > 0) {
       SaveMegaWinner(user.email, winTicketList);
       winTicketList = {
         TicketWinPrize: [],
@@ -63,39 +73,45 @@ const MegaWinner = async (ticket, thisDraw) => {
 };
 
 const SaveMegaWinner = async (email, winTicketList) => {
-  console.log(email, winTicketList);
-
+  console.log(winTicketList);
+  
   try {
     const userDoc = await M_User.findOne({
       email
     });
-    let docLen = userDoc.winners.length;
-    if (docLen > 0) {
-      if (userDoc.winners[docLen - 1].drawCount === thisDrawCount) {
-        userDoc.winners[docLen - 1].list = userDoc.winners[
-          docLen - 1
-        ].list.concat(winTicketList.TicketWinPrize);
-        userDoc.perfect_money = userDoc.perfect_money + winTicketList.quantity;
-        userDoc.lucky_coin = userDoc.lucky_coin + winTicketList.lucky_coin;
-      } else {
-        userDoc.winners = userDoc.winners.concat({
-          list: winTicketList.TicketWinPrize,
-          drawCount: thisDrawCount,
-          date: new Date()
-        });
-        userDoc.perfect_money = userDoc.perfect_money + winTicketList.quantity;
-        userDoc.lucky_coin = userDoc.lucky_coin + winTicketList.lucky_coin;
-      }
+    if (winTicketList.TicketWinPrize.length < 1) {
+      userDoc.lucky_coin = userDoc.lucky_coin + winTicketList.lucky_coin;
     } else {
-      userDoc.winners = [
-        {
-          list: winTicketList.TicketWinPrize,
-          drawCount: thisDrawCount,
-          date: new Date()
+      let docLen = userDoc.winners.length;
+      if (docLen > 0) {
+        if (userDoc.winners[docLen - 1].drawCount === thisDrawCount) {
+          userDoc.winners[docLen - 1].list = userDoc.winners[
+            docLen - 1
+          ].list.concat(winTicketList.TicketWinPrize);
+          userDoc.perfect_money =
+            userDoc.perfect_money + winTicketList.quantity;
+          userDoc.lucky_coin = userDoc.lucky_coin + winTicketList.lucky_coin;
+        } else {
+          userDoc.winners = userDoc.winners.concat({
+            list: winTicketList.TicketWinPrize,
+            drawCount: thisDrawCount,
+            date: new Date()
+          });
+          userDoc.perfect_money =
+            userDoc.perfect_money + winTicketList.quantity;
+          userDoc.lucky_coin = userDoc.lucky_coin + winTicketList.lucky_coin;
         }
-      ];
-      userDoc.perfect_money = winTicketList.quantity;
-      userDoc.lucky_coin = winTicketList.lucky_coin;
+      } else {
+        userDoc.winners = [
+          {
+            list: winTicketList.TicketWinPrize,
+            drawCount: thisDrawCount,
+            date: new Date()
+          }
+        ];
+        userDoc.perfect_money = winTicketList.quantity;
+        userDoc.lucky_coin = winTicketList.lucky_coin;
+      }
     }
     return await userDoc.save();
   } catch (e) {
