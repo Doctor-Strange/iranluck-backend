@@ -10,7 +10,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/Doctor_strange/iranl-back.git"
+    "url": "git+https://gitlab.com/Doctor_strange/iranl-back.git",
+    "heroku": "https://git.heroku.com/iran-luck.git"
   },
   "keywords": [
     "Lottery"
