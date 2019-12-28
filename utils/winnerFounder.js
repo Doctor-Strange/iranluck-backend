@@ -1,6 +1,7 @@
 const M_ThisDraw = require("../models/jackpots/thisDraw");
 const M_User = require("../models/auth/User");
 const prize_CALC = require("./prize_CALC");
+const winAlert = require('../utils/messages/winAlert')
 
 let thisDrawCount = 0;
 
@@ -31,8 +32,7 @@ const MegaWinner = async (ticket, thisDraw) => {
           if (a === b) TempArr.push(a);
         });
       });
-      console.log(TempArr);
-
+      // console.log(TempArr);
       equalItem = TempArr.length;
       if (equalItem === 1 && powerBallStatus) {
         winTicketList = {
@@ -73,8 +73,7 @@ const MegaWinner = async (ticket, thisDraw) => {
 };
 
 const SaveMegaWinner = async (email, winTicketList) => {
-  console.log(winTicketList);
-  
+  // console.log(winTicketList);
   try {
     const userDoc = await M_User.findOne({
       email
@@ -113,6 +112,7 @@ const SaveMegaWinner = async (email, winTicketList) => {
         userDoc.lucky_coin = winTicketList.lucky_coin;
       }
     }
+    userDoc.inbox = userDoc.inbox.concat(winAlert(thisDrawCount)) 
     return await userDoc.save();
   } catch (e) {
     console.log("SaveMegaWinner ==>", e);

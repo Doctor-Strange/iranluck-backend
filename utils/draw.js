@@ -46,7 +46,7 @@ switch (getDay) {
 
 exports.draw = () => {
   dayStarter();
-  jackpotSaver();
+  // jackpotSaver();
 };
 
 exports.countDown = () => {

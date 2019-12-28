@@ -1,11 +1,12 @@
 const M_User = require("../models/auth/User");
 // const M_ConfirmList = require("../models/confirm/confirmList");
+const signUpPresent = require("../utils/messages/signUpPresent");
 
 // Route ====> /auth/signup
 exports.signup = async (req, res) => {
   email = "test@gmail.com";
   password = "987654321";
-  parent_ref_id = "VYTFSQHLTN";
+  parent_ref_id = null;
   try {
     const user = await M_User.findOne({
       email
@@ -27,7 +28,8 @@ exports.signup = async (req, res) => {
       } else {
         userData = {
           email,
-          password
+          password,
+          inbox: signUpPresent()
         };
       }
       const newUser = new M_User(userData);
@@ -35,7 +37,12 @@ exports.signup = async (req, res) => {
       const token = await newUser.generateAuthToken();
       res
         .status(201)
-        .json({ token: token, message: "successful", success: true });
+        .json({
+          token: token,
+          message: "successful",
+          success: true,
+          inbox: signUpPresent()
+        });
     }
   } catch (e) {
     console.log("Error handler ===> ", e);

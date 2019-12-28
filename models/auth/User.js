@@ -100,7 +100,22 @@ const signup = new Schema({
         required: true
       }
     }
-  ]
+  ],
+  inbox: {
+    type: [
+      {
+        read: {
+          type: Boolean,
+          default: false
+        },
+        message: {
+          type: String,
+          required: true
+        },
+        date: Date
+      }
+    ]
+  }
 });
 
 signup.pre("save", async function(next) {
