@@ -13,8 +13,8 @@ exports.getCountDown = (req, res) => {
 
 // Router ===> /game/saveTicket
 exports.saveTicket = async (req, res) => {
-  const email = "test@gmail.com";
-  // const email = "sajad.saderi@gmail.com";
+  // const email = "test@gmail.com";
+  const email = "sajad.saderi@gmail.com";
   const ticket = [
     { ticket: "24,60,10,51,12,29", powerBall: 8 },
     { ticket: "42,25,7,50,41,18", powerBall: 8 },

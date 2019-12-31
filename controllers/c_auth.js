@@ -4,7 +4,8 @@ const signUpPresent = require("../utils/messages/signUpPresent");
 
 // Route ====> /auth/signup
 exports.signup = async (req, res) => {
-  email = "test@gmail.com";
+  // email = "test@gmail.com";
+  const email = "sajad.saderi@gmail.com";
   password = "987654321";
   parent_ref_id = null;
   try {
@@ -41,7 +42,6 @@ exports.signup = async (req, res) => {
           token: token,
           message: "successful",
           success: true,
-          inbox: signUpPresent()
         });
     }
   } catch (e) {

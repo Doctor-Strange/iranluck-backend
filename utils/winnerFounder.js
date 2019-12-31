@@ -1,15 +1,28 @@
 const M_ThisDraw = require("../models/jackpots/thisDraw");
 const M_User = require("../models/auth/User");
 const prize_CALC = require("./prize_CALC");
-const winAlert = require('../utils/messages/winAlert')
+const winAlert = require("../utils/messages/winAlert");
+const M_ThisDrawWinners = require("../models/jackpots/thisDrawWinner");
 
 let thisDrawCount = 0;
-
+let thisDrawWinners = {
+  tickets: [],
+  draw_count: 0
+};
 const winnerFounder = async jackpot => {
   const { ticket, drawCount } = jackpot;
   thisDrawCount = drawCount;
-  const thisDraw = await M_ThisDraw.getAllTickets();
-  MegaWinner(ticket, thisDraw);
+  thisDrawWinners.draw_count = drawCount;
+  try {
+    const thisDraw = await M_ThisDraw.getThisDrawTickets();
+    await MegaWinner(ticket, thisDraw);
+    if(thisDrawWinners.tickets.length> 0){
+      await M_ThisDrawWinners.saveWinners(thisDrawWinners);
+      return
+    }
+  } catch (e) {
+    console.log("Error handler in winnerFounder ====>", e);
+  }
 };
 
 const MegaWinner = async (ticket, thisDraw) => {
@@ -73,7 +86,7 @@ const MegaWinner = async (ticket, thisDraw) => {
 };
 
 const SaveMegaWinner = async (email, winTicketList) => {
-  // console.log(winTicketList);
+  // console.log(email, winTicketList);
   try {
     const userDoc = await M_User.findOne({
       email
@@ -112,7 +125,11 @@ const SaveMegaWinner = async (email, winTicketList) => {
         userDoc.lucky_coin = winTicketList.lucky_coin;
       }
     }
-    userDoc.inbox = userDoc.inbox.concat(winAlert(thisDrawCount)) 
+    thisDrawWinners.tickets = thisDrawWinners.tickets.concat({
+      email,
+      win_ticket: winTicketList.TicketWinPrize
+    });
+    userDoc.inbox = userDoc.inbox.concat(winAlert(thisDrawCount));
     return await userDoc.save();
   } catch (e) {
     console.log("SaveMegaWinner ==>", e);

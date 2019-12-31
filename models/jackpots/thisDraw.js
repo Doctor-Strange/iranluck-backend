@@ -34,9 +34,9 @@ thisDraw.statics.saveTicket = async (email, ticket) => {
   return;
 };
 
-thisDraw.statics.getAllTickets = async () => {
-  const user = await ThisDraw.find();
-  return user;
+// thisDraw.statics.getAllTickets = async () => {
+//   const user = await ThisDraw.find();
+//   return user;
 
   // if (user) {
   //   user.tickets = user.tickets.concat(ticket);
@@ -48,6 +48,15 @@ thisDraw.statics.getAllTickets = async () => {
   //   });
   //   newUser.save();
   // }
+// };
+
+thisDraw.statics.getThisDrawTickets = async () => {
+  try {
+    const tickets = await ThisDraw.find();
+    return tickets;
+  } catch (e) {
+    throw new Error("An Error occur, We are working on it.");
+  }
 };
 
 const ThisDraw = mongoose.model("ThisDraw", thisDraw);

@@ -187,6 +187,17 @@ signup.statics.addTicket = async (email, ticket, drawCount) => {
   }
 };
 
+signup.statics.getAllUsers = async () => {
+  try {
+    const userList = await Signup.find({}).select(
+      "email perfect_money lucky_coin"
+    );
+    return userList;
+  } catch (e) {
+    throw new Error("An Error occur, We are working on it.");
+  }
+};
+
 const Signup = mongoose.model("Users", signup);
 
 module.exports = Signup;

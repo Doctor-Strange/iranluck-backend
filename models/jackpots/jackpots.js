@@ -20,4 +20,17 @@ const jackpots = new Schema({
   }
 });
 
-module.exports = mongoose.model("Jackpots", jackpots);
+jackpots.statics.getLastJackpot = async () => {
+  try {
+    const latTicket = await Jackpots.findOne()
+      .sort({ date: -1 })
+      .limit(1);
+    return latTicket;
+  } catch (e) {
+    throw new Error("An Error occur, We are working on it");
+  }
+};
+
+const Jackpots = mongoose.model("Jackpots", jackpots);
+
+module.exports = Jackpots;

@@ -129,7 +129,7 @@ const jackpotSaver = async () => {
     // winnerFounder({
     //   ticket: { jackpot: "11,58,30,43,52,27", powerBall: 8 },
     //   date: "2019-12-24T13:46:35.646Z",
-    //   drawCount: 30,
+    //   drawCount: 17,
     //   __v: 0
     // });
     // DEV^

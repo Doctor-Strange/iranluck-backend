@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 
 const app = express();
 const router_auth = require("./routes/r_auth");
+const router_admin = require("./routes/r_admin");
 const router_game = require("./routes/r_game");
 
 const draw = require("./utils/draw");
@@ -28,6 +29,7 @@ draw.draw();
 
 // Routes
 app.use("/auth", router_auth);
+app.use("/admin", router_admin);
 app.use("/game", router_game);
 
 // Data base connection
@@ -55,5 +57,5 @@ mongoose
     });
   })
   .catch(err => {
-    console.log(err);
+    console.log("Error handler ===>",err);
   });
