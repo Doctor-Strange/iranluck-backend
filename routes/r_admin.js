@@ -9,6 +9,11 @@ const middleWare_auth = require("../middlewares/midde_auth");
 Router.use("/signup", controller_admin.signup);
 Router.use("/signin", middleWare_auth, controller_admin.signIn);
 Router.use(
+  "/manualDraw",
+  //  middleWare_auth,
+  controller_draw.manualDraw
+);
+Router.use(
   "/getThisDrawTickets",
   // middleWare_auth,
   controller_draw.getThisDrawTickets
