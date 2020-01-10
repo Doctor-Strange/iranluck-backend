@@ -1,0 +1,21 @@
+Authorization Routes
+auth/signup
+auth/signin
+auth/confirmcode
+
+
+Game Routes
+game/CountDown
+game/saveTicket
+
+
+Admin Routes
+admin/signup
+admin/signin
+admin/manualDraw
+admin/getThisDrawTickets
+admin/lastJackpot
+admin/getRegisteredUser
+admin/confirmcode
+admin/getWinnerTicketsByDraw
+admin/getAllWinnerTickets

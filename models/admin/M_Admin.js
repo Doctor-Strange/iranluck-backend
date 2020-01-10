@@ -24,6 +24,10 @@ const admin = new Schema({
     type: Number,
     default: 2
   },
+  confirm_code: {
+    code: Number,
+    Timestamp: Number
+  },
   tokens: [
     {
       token: {
@@ -51,6 +55,17 @@ admin.pre("save", async function(next) {
   next();
 });
 
+admin.statics.generateConfirmCode = async _id => {
+  // add 3 minutes to current time stamp
+  let Timestamp = Date.now() + 180;
+  const user = await Admin.findOne({ _id });
+  user.confirm_code = {
+    code: confirmCode_GEN,
+    Timestamp
+  };
+  return await user.save();
+};
+
 admin.methods.generateAuthToken = async function() {
   // Generate an auth token for the user
   const user = this;
@@ -76,6 +91,28 @@ admin.statics.findByCredentials = async (email, password) => {
   });
   user.save();
   return user;
+};
+
+admin.statics.checkConfirmcode = async (_id, confirmCode) => {
+  const user = await await Admin.findOne({ _id });
+  if (!user) {
+    throw new Error("Email address is not correct");
+  }
+  const { Timestamp, code } = user;
+  const RightNowTimeStamp = Date.now();
+  if (Timestamp > RightNowTimeStamp) {
+    if (code === confirmCode) {
+      user.confirm_code = {
+        code: 0,
+        Timestamp: 0
+      };
+      return await user.save();
+    } else {
+      throw new Error("Your confirm code is not correct.");
+    }
+  } else {
+    throw new Error("Your confirm code is expired.");
+  }
 };
 
 const Admin = mongoose.model("Admins", admin);

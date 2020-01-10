@@ -1,5 +1,5 @@
 const M_Admin = require("../../models/admin/M_Admin");
-const M_AdminConfirmList = require("../../models/admin/M_AdminConfirmList");
+// const M_AdminConfirmList = require("../../models/admin/M_AdminConfirmList");
 const confirmCode_GEN = require("../../utils/confirmCode_GEN");
 
 // Route ====> /admin/signup
@@ -24,12 +24,6 @@ exports.signup = async (req, res) => {
       });
       await newUser.save();
       const token = await newUser.generateAuthToken();
-      const newCode = await new M_AdminConfirmList({
-        email,
-        code
-      });
-      await newCode.save();
-      Mailer(email, "Confirm Code", code);
       return res.status(201).json({
         token: token,
         message: "successful",
@@ -56,20 +50,21 @@ exports.signIn = async (req, res) => {
   }
 };
 
-
 // Route ====> /admin/confirmcode
 exports.confirmCodeCheck = async (req, res) => {
+  // const {_id} = req.user
+  // const {code} = req.body
+
   const code = "22574";
-  email = "iran.luck.email@gmail.com";
+  const _id = "";
+  // DEV^
   try {
-    const checkCredentials = await M_AdminConfirmList.findByCredentials(email, code);
-    checkCredentials.remove();
+    await M_Admin.checkConfirmcode(_id, code);
     return res.json({
       success: true,
       message: "ok"
     });
   } catch (e) {
     res.status(400).json({ success: false, message: e.message });
-    console.log("Error handler ===> ", e);
   }
 };

@@ -36,13 +36,11 @@ exports.signup = async (req, res) => {
       const newUser = new M_User(userData);
       await newUser.save();
       const token = await newUser.generateAuthToken();
-      res
-        .status(201)
-        .json({
-          token: token,
-          message: "successful",
-          success: true,
-        });
+      res.status(201).json({
+        token: token,
+        message: "successful",
+        success: true
+      });
     }
   } catch (e) {
     console.log("Error handler ===> ", e);
@@ -64,21 +62,24 @@ exports.signIn = async (req, res) => {
 };
 
 // Route ====> /auth/confirmcode
-// exports.confirmCodeCheck = async (req, res) => {
-//   const code = "22574";
-//   email = "iran.luck.email@gmail.com";
-//   try {
-//     const checkCredentials = await M_ConfirmList.findByCredentials(email, code);
-//     checkCredentials.remove();
-//     return res.json({
-//       success: true,
-//       message: "ok"
-//     });
-//   } catch (e) {
-//     res.status(400).json({ success: false, message: e.message });
-//     console.log("Error handler ===> ", e);
-//   }
-// };
+exports.confirmCodeCheck = async (req, res) => {
+  // const {_id} = req.user
+  // const {code} = req.body
+
+  const code = "22574";
+  const _id = "";
+  // DEV^
+
+  try {
+    await M_User.checkConfirmcode(_id, code);
+    return res.json({
+      success: true,
+      message: "ok"
+    });
+  } catch (e) {
+    res.status(400).json({ success: false, message: e.message });
+  }
+};
 
 // send email workFlow ===>
 

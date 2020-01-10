@@ -13,8 +13,16 @@ exports.getCountDown = (req, res) => {
 
 // Router ===> /game/saveTicket
 exports.saveTicket = async (req, res) => {
-  // const email = "test@gmail.com";
-  const email = "sajad.saderi@gmail.com";
+  // const {_id,ticket,lucky_coin, perfect_money} = req.user,
+  // const {use_lucky_coin,ticketCount} = req;
+
+  const ticketCount = 3;
+  const use_lucky_coin = true;
+  let { lucky_coin, perfect_money } = req.user;
+  const email = "test@gmail.com";
+  // const email = "sajad.saderi@gmail.com";
+  // DEV^
+
   const ticket = [
     { ticket: "24,60,10,51,12,29", powerBall: 8 },
     { ticket: "42,25,7,50,41,18", powerBall: 8 },
@@ -28,14 +36,28 @@ exports.saveTicket = async (req, res) => {
     { ticket: "27,17,57,33,47,7", powerBall: 5 }
   ];
   // DEV ^
-  if (ticket.length > 100)
+  if (ticket.length > 500)
     res.status(403).json({
       success: false,
       message: "You can't buy more than 100 tickets on each day."
     });
   try {
+    if (use_lucky_coin) {
+      lucky_coin = lucky_coin - 1;
+      perfect_money = perfect_money - (ticketCount - 1);
+    } else {
+      perfect_money = perfect_money - ticketCount;
+    }
     const drawCount = await M_Jackpots.estimatedDocumentCount();
-    const user = await M_User.addTicket(email, ticket, drawCount);
+    // const user = await M_User.addTicket(_id, ticket, drawCount);
+    const user = await M_User.addTicket(
+      email,
+      ticket,
+      drawCount,
+      perfect_money,
+      lucky_coin
+    );
+    // DEV^
     M_ThisDraw.saveTicket(email, ticket);
     return res.json({
       success: true,

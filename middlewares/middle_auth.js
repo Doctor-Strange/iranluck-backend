@@ -3,10 +3,11 @@ const M_user = require("../models/auth/User");
 
 const authMiddleware = async (req, res, next) => {
   const Authorization =
-    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTA0NWRlNDFkYjhhYTBmNmM3MDA2YWEiLCJpYXQiOjE1NzczNDQ0ODR9.EIqfMEOfn4EQFMwgKdON0KVwdmZhGxA9G1DLUjwkT44";
+    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZTA3OTI0ZjFjZjcyOTI1MWNiMDRiYzIiLCJpYXQiOjE1Nzc1NTQ1MTF9.iHh_9taAMucvWjFFHaGFPQ76KU2nVK8x8Ku5FjvBWkE";
   // const token = req.header("Authorization").replace("Bearer ", "");
   const token = Authorization.replace("Bearer ", "");
-  const data = jwt.verify(token, process.env.JWT_KEY);
+  // DEV^
+  const data = jwt.verify(token, process.env.JWT_KEY);  
   try {
     const user = await M_user.findOne({
       _id: data._id,
@@ -19,7 +20,7 @@ const authMiddleware = async (req, res, next) => {
     req.token = token;
     next();
   } catch (e) {
-    res.status(401).send({ success: false, message: e.message });
+    res.status(401).json({ success: false, message: e.message });
   }
 };
 

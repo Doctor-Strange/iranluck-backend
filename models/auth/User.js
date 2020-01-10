@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const Schema = mongoose.Schema;
 const Ref_GEN = require("../../utils/ref_id_GEN");
+const confirmCode_GEN = require("../../utils/confirmCode_GEN");
 
 const signup = new Schema({
   email: {
@@ -76,6 +77,10 @@ const signup = new Schema({
     type: Number,
     default: 1
   },
+  confirm_code: {
+    code: Number,
+    Timestamp: Number
+  },
   deposit_history: {
     type: [
       {
@@ -127,6 +132,17 @@ signup.pre("save", async function(next) {
   next();
 });
 
+signup.statics.generateConfirmCode = async _id => {
+  // add 3 minutes to current time stamp
+  let Timestamp = Date.now() + 180;
+  const user = await Signup.findOne({ _id });
+  user.confirm_code = {
+    code: confirmCode_GEN,
+    Timestamp
+  };
+  return await user.save();
+};
+
 signup.methods.generateAuthToken = async function() {
   // Generate an auth token for the user
   const user = this;
@@ -158,12 +174,24 @@ signup.statics.addLuckyCoin = async ref_id => {
   return await user.save();
 };
 
-signup.statics.addTicket = async (email, ticket, drawCount) => {
+signup.statics.addTicket = async (
+  // id,
+  email,
+  // DEV^
+  ticket,
+  drawCount,
+  perfect_money,
+  lucky_coin
+) => {
   try {
+    // const user = await Signup.findOne({ id });
     const user = await Signup.findOne({ email });
+    // DEV^
     if (!user) {
       throw new Error("User not found!");
     }
+    user.perfect_money = perfect_money;
+    user.lucky_coin = lucky_coin;
     if (user.tickets.length >= 1) {
       const DocLen = user.tickets.length - 1;
       if (user.tickets[DocLen].drawCount === drawCount) {
@@ -195,6 +223,28 @@ signup.statics.getAllUsers = async () => {
     return userList;
   } catch (e) {
     throw new Error("An Error occur, We are working on it.");
+  }
+};
+
+signup.statics.checkConfirmcode = async (_id, confirmCode) => {
+  const user = await await Signup.findOne({ _id });
+  if (!user) {
+    throw new Error("Email address is not correct");
+  }
+  const { Timestamp, code } = user;
+  const RightNowTimeStamp = Date.now();
+  if (Timestamp > RightNowTimeStamp) {
+    if (code === confirmCode) {
+      user.confirm_code = {
+        code: 0,
+        Timestamp: 0
+      };
+      return await user.save();
+    } else {
+      throw new Error("Your confirm code is not correct.");
+    }
+  } else {
+    throw new Error("Your confirm code is expired.");
   }
 };
 
