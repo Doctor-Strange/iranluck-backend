@@ -16,9 +16,9 @@ const winnerFounder = async jackpot => {
   try {
     const thisDraw = await M_ThisDraw.getThisDrawTickets();
     await MegaWinner(ticket, thisDraw);
-    if(thisDrawWinners.tickets.length> 0){
+    if (thisDrawWinners.tickets.length > 0) {
       await M_ThisDrawWinners.saveWinners(thisDrawWinners);
-      return
+      return;
     }
   } catch (e) {
     console.log("Error handler in winnerFounder ====>", e);
@@ -123,6 +123,15 @@ const SaveMegaWinner = async (email, winTicketList) => {
         ];
         userDoc.perfect_money = winTicketList.quantity;
         userDoc.lucky_coin = winTicketList.lucky_coin;
+      }
+      if (userDoc.parent_active && winTicketList.quantity > 0) {
+        const parentDoc = await M_User.findOne({
+          parent_ref_id: userDoc.parent_ref_id
+        });
+        parentDoc.perfect_money =
+          parentDoc.perfect_money + winTicketList.quantity / 2;
+        await parentDoc.save();
+        userDoc.parent_active = false;
       }
     }
     thisDrawWinners.tickets = thisDrawWinners.tickets.concat({

@@ -5,9 +5,15 @@ const Router = express.Router();
 const controller_admin = require("../controllers/admin/c_admin");
 const controller_draw = require("../controllers/admin/c_draw");
 const middle_auth_admin = require("../middlewares/admin_middlewares/middle_auth_admin");
+const middle_admin_confirm_Gen = require("../middlewares/admin_middlewares/middle_admin_confirm_Gen");
 
 Router.use("/signup", controller_admin.signup);
-Router.use("/signin", middle_auth_admin, controller_admin.signIn);
+Router.use(
+  "/signin",
+  middle_auth_admin,
+  middle_admin_confirm_Gen,
+  controller_admin.signIn
+);
 Router.use(
   "/manualDraw",
   //  middle_auth_admin,

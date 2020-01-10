@@ -69,6 +69,11 @@ const signup = new Schema({
     default: Ref_GEN()
   },
   parent_ref_id: String,
+  // check if the parent got half of the prize of the winner.
+  parent_active: {
+    type: Boolean,
+    default: true
+  },
   perfect_money: {
     type: Number,
     default: 0

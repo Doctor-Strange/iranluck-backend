@@ -6,10 +6,12 @@ const middle_purchase = (req, res, next) => {
   const use_lucky_coin = true;
   // DEV^
   // ticketCount = req.ticket.length
-  ticketCount = 3;
+  ticketCount = 3.5;
   // DEV^
+  // Round Down Perfect money if it has decimal number
+  let RoundDownDeposit = Math.floor(perfect_money);
   try {
-    if (perfect_money <= 0) {
+    if (RoundDownDeposit <= 0) {
       throw new Error(
         "Your Don't have any Perfect Money, please charge your account"
       );
@@ -20,10 +22,10 @@ const middle_purchase = (req, res, next) => {
     // add ticketCount to request object
     req.ticketCount = ticketCount;
     if (use_lucky_coin) {
-      if (ticketCount > perfect_money) {
-        if (ticketCount === perfect_money + 1) {
+      if (ticketCount > RoundDownDeposit) {
+        if (ticketCount === RoundDownDeposit + 1) {
           next();
-        } else if (ticketCount > perfect_money + 1) {
+        } else if (ticketCount > RoundDownDeposit + 1) {
           throw new Error(
             "Your Deposit is not enough, please charge your account"
           );
@@ -31,11 +33,11 @@ const middle_purchase = (req, res, next) => {
           next();
         }
       }
-      if (ticketCount < perfect_money) {
+      if (ticketCount < RoundDownDeposit) {
         next();
       }
     } else {
-      if (ticketCount > perfect_money) {
+      if (ticketCount > RoundDownDeposit) {
         throw new Error(
           "Your Deposit is not enough, please charge your account"
         );
